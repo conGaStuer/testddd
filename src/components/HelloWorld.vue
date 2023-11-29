@@ -1,57 +1,94 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
-  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Password</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Sử dụng v-for để lặp qua mảng dữ liệu và hiển thị từng dòng trong bảng -->
+      <tr v-for="user in users" :key="user.id">
+        <td>{{ user.id }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.password }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <form action="" method="post">
+    <input type="text" v-model="username" />
+    <input type="text" name="" id="" v-model="password" />
+    <input type="button" value="Submit" @click="addUser" />
+  </form>
 </template>
 
 <script>
+// Cài đặt Axios: npm install axios
+import axios from "axios";
+import { onMounted, ref } from "vue";
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
-}
-</script>
+  setup() {
+    const newUser = {
+      username: "",
+      password: "",
+    };
+    const users = ref();
+    const fetchUser = () => {
+      axios
+        .get("http://localhost/test-backend/test-backend/src/api.php")
+        .then((response) => {
+          console.log(response.data);
+          users.value = response.data;
+          // Xử lý dữ liệu nhận được
+        })
+        .catch((error) => {
+          console.error(error);
+          // Xử lý lỗi
+        });
+    };
+    const addUser = () => {
+      axios
+        .post("http://localhost/test-backend/test-backend/src/api.php")
+        .then((response) => {
+          console.log(response.data);
+          fetchUser();
+          // Xử lý dữ liệu nhận được
+        })
+        .catch((error) => {
+          console.error(error);
+          // Xử lý lỗi
+        });
+    };
+    return {
+      newUser,
+      username,
+      password,
+      users,
+      addUser,
+      fetchUser,
+    };
+  },
+  // data() {
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>
+  //   return {
+
+  //     users: [],
+  //   };
+  // },
+  // mounted() {
+  //   axios
+  //     .get("http://localhost/test-backend/test-backend/src/api.php")
+  //     .then((response) => {
+  //       console.log(response.data);
+  //       this.users = response.data;
+  //       // Xử lý dữ liệu nhận được
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       // Xử lý lỗi
+  //     });
+  // },
+};
+// Gửi GET request
+</script>
